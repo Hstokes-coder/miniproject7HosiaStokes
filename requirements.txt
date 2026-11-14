@@ -1,0 +1,5 @@
+# Pinned to the versions this project was built and tested with.
+# mcp 1.x provides FastMCP (mcp.server.fastmcp); mcp 2.x renamed it,
+# so the starter code needs mcp<2.
+mcp==1.30.0
+httpx==0.28.1
