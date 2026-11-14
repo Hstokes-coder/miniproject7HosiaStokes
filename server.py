@@ -99,7 +99,70 @@ def list_posts(mine: bool = False) -> list[dict]:
     r = _request("GET", "/api/v1/posts", "the post list", params={"mine": mine})
     return _json(r)
 
-# ...add get_post, create_post, update_post, delete_post
+
+@mcp.tool()
+def get_post(post_id: int) -> dict:
+    """Get one post by its ID.
+
+    Returns the post's id, title, body, tags, author_id, author_name,
+    created_at, updated_at, and attachments.
+    """
+    r = _request("GET", f"/api/v1/posts/{post_id}", f"post {post_id}")
+    return _json(r)
+
+
+@mcp.tool()
+def create_post(title: str, body: str = "", tags: list[str] | None = None) -> dict:
+    """Create a new post owned by you.
+
+    title is required. body is optional text (Markdown is fine). tags is
+    an optional list of strings, for example ["python", "api"].
+    Returns the new post, including its id.
+    """
+    if not title.strip():
+        raise ToolError("A post needs a title; title cannot be empty.")
+    payload = {"title": title, "body": body}
+    if tags is not None:
+        payload["tags"] = tags
+    r = _request("POST", "/api/v1/posts", "the new post", json=payload)
+    return _json(r)
+
+
+@mcp.tool()
+def update_post(post_id: int, title: str | None = None, body: str | None = None,
+                tags: list[str] | None = None) -> dict:
+    """Update one of your own posts.
+
+    Only the fields you pass are changed (title, body, and/or tags); the
+    rest stay as they are. Returns the updated post. You cannot update
+    posts that belong to other users.
+    """
+    changes = {}
+    if title is not None:
+        if not title.strip():
+            raise ToolError("title cannot be empty; leave it out to keep the current title.")
+        changes["title"] = title
+    if body is not None:
+        changes["body"] = body
+    if tags is not None:
+        changes["tags"] = tags
+    if not changes:
+        raise ToolError("Nothing to update: pass at least one of title, body, or tags.")
+    r = _request("PATCH", f"/api/v1/posts/{post_id}", f"post {post_id}", json=changes)
+    return _json(r)
+
+
+@mcp.tool()
+def delete_post(post_id: int) -> str:
+    """Permanently delete one of your own posts by its ID.
+
+    This cannot be undone. You cannot delete posts that belong to other users.
+    """
+    _request("DELETE", f"/api/v1/posts/{post_id}", f"post {post_id}")
+    return f"Post {post_id} was deleted."
+
 
 if __name__ == "__main__":
-    mcp.run()
+    # stdio transport: Claude Code starts this script and talks to it
+    # over standard input/output.
+    mcp.run(transport="stdio")
