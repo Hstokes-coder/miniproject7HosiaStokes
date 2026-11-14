@@ -1,0 +1,12 @@
+# Virtual environment (rebuild with: python3 -m venv .venv)
+.venv/
+
+# Secrets - your Practice Hub API token lives here, never in Git
+.env
+
+# Python caches
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
