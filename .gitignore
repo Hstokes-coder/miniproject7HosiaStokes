@@ -23,3 +23,6 @@ htmlcov/
 .vscode/
 .idea/
 .DS_Store
+
+# Raw Claude Code export (a cleaned copy lives in docs/)
+acceptance-test-raw.txt

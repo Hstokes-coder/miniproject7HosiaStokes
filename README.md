@@ -153,8 +153,12 @@ Start Claude Code in the project folder (`cd ~/mini_project_7 && claude`) and as
 3. **Modify its title:** "Change the title of that post to 'MP7 acceptance test –
    edited'."
 
-Claude should call `list_posts`, `create_post`, and `update_post`, in that order. The
-redacted transcript is saved in [`docs/`](docs/).
+Claude should call `list_posts`, `create_post`, and `update_post`, in that order.
+
+**Result (November 14, 2026):** all three tool calls succeeded through Claude Code.
+`create_post` created post 60, and `update_post` changed its title to
+"MP7 acceptance test – edited". The redacted transcript is in
+[`docs/acceptance-test-transcript.md`](docs/acceptance-test-transcript.md).
 
 ## AI Usage
 
