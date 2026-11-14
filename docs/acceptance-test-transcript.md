@@ -66,3 +66,70 @@
 | 1. Read my posts | `list_posts` | Succeeded; returned an empty list (taken before the new post existed) |
 | 2. Create a test post | `create_post` | Succeeded; created post **60** |
 | 3. Modify its title | `update_post` | Succeeded; post 60 retitled "MP7 acceptance test – edited" |
+
+## Follow-up verification (read-only)
+
+Run the same day at 10:13 AM Pacific in a new Claude Code session in
+`~/mini_project_7`. The prompts asked Claude Code to use only `list_posts`
+(`mine=true`) and `get_post`, and not to create, update, or delete anything. The
+output below is copied from my Terminal with Claude Code's detailed transcript
+view (Ctrl+O) turned on.
+
+```text
+⏺ Here is post 60 from get_post. I didn't create, update or delete anything.
+
+  ┌─────────────┬───────────────────────────────────────────────────┐
+  │    Field    │                       Value                       │
+  ├─────────────┼───────────────────────────────────────────────────┤
+  │ id          │ 60                                                │
+  ├─────────────┼───────────────────────────────────────────────────┤
+  │ title       │ MP7 acceptance test – edited                      │
+  ├─────────────┼───────────────────────────────────────────────────┤
+  │ body        │ Created by Claude Code through my FastMCP server. │
+  ├─────────────┼───────────────────────────────────────────────────┤
+  │ tags        │ inf601, mcp                                       │
+  ├─────────────┼───────────────────────────────────────────────────┤
+  │ author_name │ Hosia Stokes                                      │
+  ├─────────────┼───────────────────────────────────────────────────┤
+  │ created_at  │ 2026-11-14T15:37:55.719923                        │
+  ├─────────────┼───────────────────────────────────────────────────┤
+  │ updated_at  │ 2026-11-14T15:37:58.040500                        │
+  └─────────────┴───────────────────────────────────────────────────┘
+
+  The values are the same as what list_posts returned.
+
+✻ Crunched for 5s · done 10:13 AM
+```
+
+What this confirms:
+
+- Post 60 exists and belongs to me (`author_name`: Hosia Stokes).
+- Its title is **"MP7 acceptance test – edited"**, so the `update_post` call worked.
+- The body ("Created by Claude Code through my FastMCP server.") and tags
+  (`inf601`, `mcp`) match what `create_post` sent, so the update changed only the
+  title.
+- `created_at` (15:37:55) and `updated_at` (15:37:58 UTC) match the original
+  acceptance test, which shows this verification did not modify the post.
+- Only the `get_post` result was captured. The `list_posts` response itself was
+  scrolled out of view; Claude Code reported that it returned the same values.
+
+## Unit tests on macOS
+
+`python -m unittest -v`, run on my Mac in the project's `.venv` (Python 3.14,
+`mcp` 1.30.0, `httpx` 0.28.1). Shortened to the final lines; all 19 tests
+showed `ok`:
+
+```text
+test_update_post_with_nothing_to_change (test_server.ServerTests.test_update_post_with_nothing_to_change) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.002s
+
+OK
+```
+
+## Server registration check
+
+```text
+practice-hub: /Users/hosiastokes/mini_project_7/.venv/bin/python /Users/hosiastokes/mini_project_7/server.py - ✔ Connected
+```
