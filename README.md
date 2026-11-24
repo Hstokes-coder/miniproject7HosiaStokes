@@ -60,7 +60,9 @@ mini_project_7/
 ├── server.py            # The FastMCP server and its five tools
 ├── test_server.py       # Offline unit tests (fake API, no token needed)
 ├── requirements.txt     # mcp==1.30.0, httpx==0.28.1
-├── docs/                # Redacted acceptance-test transcript
+├── .claude/skills/post-summarizer/
+│   └── SKILL.md         # Week 14 Agent Skill (see "Agent Skill" below)
+├── docs/                # Acceptance-test transcript and Week 14 skill test results
 ├── .gitignore           # Keeps .venv, .env, caches, and secrets out of Git
 └── README.md
 ```
@@ -160,6 +162,50 @@ Claude should call `list_posts`, `create_post`, and `update_post`, in that order
 "MP7 acceptance test – edited". The redacted transcript is in
 [`docs/acceptance-test-transcript.md`](docs/acceptance-test-transcript.md).
 
+## Agent Skill: `post-summarizer` (Week 14)
+
+`.claude/skills/post-summarizer/SKILL.md` is a Claude Code Agent Skill. It reads your
+Practice Hub posts through the `practice-hub` MCP server, summarizes them into a study
+note, and publishes the note as a new post **only after you approve it**.
+
+### Requirements
+
+- The `practice-hub` server is registered and connected (see
+  [Registering the server with Claude Code](#registering-the-server-with-claude-code)).
+- Claude Code is started from this project folder, so it finds the skill in `.claude/skills/`.
+
+### Using it
+
+```bash
+cd ~/mini_project_7
+claude
+```
+
+Then, inside Claude Code:
+
+1. Type `/post-summarizer`. You can also ask in plain words, for example "summarize my
+   Practice Hub posts into a study note", and Claude Code loads the skill itself.
+2. Claude calls `list_posts` with `mine=true`, then shows the draft study note, the number of
+   posts, and the proposed title (`Study Note - Practice Hub Digest`) and tags.
+3. Reply with your approval (for example, "Yes, publish it with inf601 and mcp tags") or ask
+   for changes. Nothing is posted until you approve.
+4. Claude calls `create_post` and then `get_post` to confirm the new post, and shows you its ID.
+
+### Safety rules in the skill
+
+- Only `list_posts` and `get_post` (read-only) are pre-approved in `allowed-tools`.
+  Claude Code still asks permission before `create_post` runs.
+- The skill never calls `update_post` or `delete_post`, so existing posts are not changed.
+- If no posts are found, it says so and does not publish.
+- The API token stays in the server's environment and is never shown.
+
+Each approved run creates a **new** post. It does not update an earlier digest, so
+delete old digests by hand in Practice Hub if you only want one.
+
+**Result (November 23–24, 2026):** the skill published post 70 and post 71 after
+approval, and `get_post` confirmed both. Post 60 was not changed. Full results are in
+[`docs/week14-agent-skill-test.md`](docs/week14-agent-skill-test.md).
+
 ## AI Usage
 
 This project was built with help from **Claude** (Anthropic) as a coding assistant, in
@@ -180,5 +226,8 @@ line with the course AI Use Policy.
 - Writing the offline unit tests, `requirements.txt`, `.gitignore`, and this README.
 - Explaining each part of the code in beginner-friendly terms, and preparing the
   Claude Code registration command and acceptance-test steps.
+- Week 14: moving `SKILL.md` into `.claude/skills/post-summarizer/`, matching its tool
+  parameters to `server.py`, running the skill through Claude Code, and writing
+  `docs/week14-agent-skill-test.md`. I approved each post before it was published.
 
 My API token was never shared with Claude or written into any file in this repository.
