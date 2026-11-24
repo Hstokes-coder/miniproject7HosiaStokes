@@ -63,7 +63,7 @@ mini_project_7/
 ├── requirements.txt     # mcp==1.30.0, httpx==0.28.1, claude-agent-sdk==0.2.188
 ├── .claude/skills/post-summarizer/
 │   └── SKILL.md         # Week 14 Agent Skill (see "Agent Skill" below)
-├── docs/                # Acceptance-test transcript and Week 14 skill test results
+├── docs/                # Acceptance-test transcript and Week 14 skill and SDK lab test results
 ├── .gitignore           # Keeps .venv, .env, caches, and secrets out of Git
 └── README.md
 ```
@@ -258,6 +258,10 @@ THREE COMMON NETWORK SECURITY RISKS
 ------------------------------------------------------------
 Finished in 9.6 s, 1 turn(s).
 ```
+
+Full test results, including versions, the sign-in check, the asynchronous generator
+error found on the first run and its fix, and a requirements table, are in
+[`docs/week14-agent-sdk-test.md`](docs/week14-agent-sdk-test.md).
 
 ## AI Usage
 
