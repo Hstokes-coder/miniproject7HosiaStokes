@@ -3,3 +3,5 @@
 # so the starter code needs mcp<2.
 mcp==1.30.0
 httpx==0.28.1
+# Week 14 Agent SDK lab (agent_lab.py)
+claude-agent-sdk==0.2.188

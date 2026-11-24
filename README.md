@@ -58,8 +58,9 @@ missing variable.
 ```
 mini_project_7/
 ├── server.py            # The FastMCP server and its five tools
+├── agent_lab.py         # Week 14 Agent SDK lab (see "Agent SDK Lab" below)
 ├── test_server.py       # Offline unit tests (fake API, no token needed)
-├── requirements.txt     # mcp==1.30.0, httpx==0.28.1
+├── requirements.txt     # mcp==1.30.0, httpx==0.28.1, claude-agent-sdk==0.2.188
 ├── .claude/skills/post-summarizer/
 │   └── SKILL.md         # Week 14 Agent Skill (see "Agent Skill" below)
 ├── docs/                # Acceptance-test transcript and Week 14 skill test results
@@ -206,6 +207,58 @@ delete old digests by hand in Practice Hub if you only want one.
 approval, and `get_post` confirmed both. Post 60 was not changed. Full results are in
 [`docs/week14-agent-skill-test.md`](docs/week14-agent-skill-test.md).
 
+## Agent SDK Lab (Week 14)
+
+`agent_lab.py` uses the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk)
+(`claude-agent-sdk`) to run an agent on a small task: it names three common network
+security risks, recommends a solution for each, and prints the answer.
+
+### How it works
+
+- `asyncio.run()` starts `run_agent()`, which calls the SDK's `query()` with a prompt
+  and `ClaudeAgentOptions`, and reads the agent's messages as they stream in.
+- The text from each `AssistantMessage` is collected. The final `ResultMessage` reports
+  whether the run succeeded, how long it took, and how many turns it used.
+- The agent gets **no tools** (`tools=[]`), no project settings or skills
+  (`setting_sources=[]`), no MCP servers (`strict_mcp_config=True`), and one turn
+  (`max_turns=1`). It can only answer, so it cannot reach Practice Hub or change files.
+
+### Authentication
+
+The Agent SDK runs Claude Code behind the scenes. When `ANTHROPIC_API_KEY` is **not**
+set, it uses the account you are logged in to in Claude Code, so no API key is needed.
+Run `claude` once and log in first if you haven't already.
+
+### Running it
+
+```bash
+cd ~/mini_project_7
+source .venv/bin/activate
+pip install -r requirements.txt
+python agent_lab.py
+```
+
+**Result (November 23, 2026):** the program exited with code 0 after 9.6 seconds and
+1 turn. It printed three risks with solutions: phishing (security training, email
+filtering, MFA), unpatched software (patch management and automatic updates), and weak
+or default passwords (strong password policies, password managers, MFA). Sample output:
+
+```
+Asking the agent about network security risks...
+
+THREE COMMON NETWORK SECURITY RISKS
+
+1. Phishing Attacks
+   Risk: Phishing
+   Why it's dangerous: Attackers send fake emails or messages that
+   trick users into revealing passwords or installing malware. ...
+   Solution: Provide regular security awareness training, enable
+   email filtering, and require multi-factor authentication (MFA) ...
+...
+------------------------------------------------------------
+Finished in 9.6 s, 1 turn(s).
+```
+
 ## AI Usage
 
 This project was built with help from **Claude** (Anthropic) as a coding assistant, in
@@ -229,5 +282,9 @@ line with the course AI Use Policy.
 - Week 14: moving `SKILL.md` into `.claude/skills/post-summarizer/`, matching its tool
   parameters to `server.py`, running the skill through Claude Code, and writing
   `docs/week14-agent-skill-test.md`. I approved each post before it was published.
+- Week 14 Agent SDK lab: writing `agent_lab.py` against the installed
+  `claude-agent-sdk` package, running it with my Claude Code login (no API key), and
+  fixing a cleanup warning found on the first run. I reviewed the results before they
+  were committed.
 
 My API token was never shared with Claude or written into any file in this repository.
